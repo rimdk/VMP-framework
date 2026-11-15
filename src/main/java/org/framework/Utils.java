@@ -761,9 +761,20 @@ public class Utils {
 
         prepareFilesSuffix();
 
-        parameter.stream()
-                .filter(line -> line.split("=").length == 1 && !line.equals(SCENARIOS))
-                .forEach(scenariosFiles::add);
+        Stream<String> scenarioLines = parameter.stream()
+                .filter(line -> line.split("=").length == 1 && !line.equals(SCENARIOS));
+
+        // Optional limit: experiment.maxScenarios=3 (or 5, 10, ...). Absent or "all" = every scenario.
+        // The first N scenarios in file order are taken, so the selection is deterministic.
+        String maxScenarios = (String) parameterMap.get("experiment.maxScenarios");
+        if (maxScenarios != null && !maxScenarios.trim().equalsIgnoreCase("all")) {
+            int limit = Integer.parseInt(maxScenarios.trim());
+            if (limit < 1) {
+                throw new IllegalArgumentException("experiment.maxScenarios must be >= 1 or 'all', was: " + maxScenarios);
+            }
+            scenarioLines = scenarioLines.limit(limit);
+        }
+        scenarioLines.forEach(scenariosFiles::add);
     }
 
     public static void prepareFilesSuffix() {
