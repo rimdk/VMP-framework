@@ -2,8 +2,8 @@ package org.framework.reconfigurationAlgorithm.memeticAlgorithm;
 
 import org.domain.PhysicalMachine;
 import org.domain.VirtualMachine;
-import org.framework.Constraints;
-import org.framework.Parameter;
+import org.framework.common.Constraints;
+import org.framework.common.Parameter;
 import org.framework.Utils;
 
 import java.util.List;

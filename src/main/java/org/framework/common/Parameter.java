@@ -140,6 +140,24 @@ public class Parameter {
      * - DISTRIBUTED
      */
     public static String APPROACH;
+    /**
+     * Raw VMPr_TRIGGERING value (NULL if absent). Recorded in the comparison CSV.
+     */
+    public static String VMPR_TRIGGERING = "NULL";
+    /**
+     * Optimizer used for the memetic reconfiguration call:
+     * - MOMAVMP (default when VMPr_OPTIMIZER is absent)
+     * - NSGA2
+     */
+    public static String VMPR_OPTIMIZER = "MOMAVMP";
+    /**
+     * Run identifier written to the comparison CSV names (experiment.runId, optional).
+     */
+    public static String EXPERIMENT_RUN_ID;
+    /**
+     * Base random seed (experiment.seed, optional). Null = unseeded (original behaviour).
+     */
+    public static Long EXPERIMENT_SEED;
 
     private Parameter() {
         // Default Constructor

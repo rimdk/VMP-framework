@@ -169,6 +169,15 @@ public class Utils {
         revenue.setNet(r3);
     }
 
+    /**
+     * Re-seed the random generator (used for reproducible comparison runs).
+     *
+     * @param seed Seed
+     */
+    public static void setRandomSeed(long seed) {
+        random = new Random(seed);
+    }
+
     public static int getRandomInt(int min, int max) {
 
         return min + random.nextInt(max - min + 1);
@@ -760,6 +769,28 @@ public class Utils {
 
 
         prepareFilesSuffix();
+
+        // VMPr optimizer: MOMAVMP (default, original behaviour) or NSGA2.
+        String optimizer = (String) parameterMap.get("VMPr_OPTIMIZER");
+        if (optimizer == null) {
+            Parameter.VMPR_OPTIMIZER = "MOMAVMP";
+        } else {
+            optimizer = optimizer.trim().toUpperCase();
+            if (!optimizer.equals("MOMAVMP") && !optimizer.equals("NSGA2")) {
+                throw new IllegalArgumentException("VMPr_OPTIMIZER must be MOMAVMP or NSGA2, was: " + optimizer);
+            }
+            Parameter.VMPR_OPTIMIZER = optimizer;
+        }
+        if (parameterMap.get("VMPr_TRIGGERING") != null) {
+            Parameter.VMPR_TRIGGERING = (String) parameterMap.get("VMPr_TRIGGERING");
+        } else {
+            Parameter.VMPR_TRIGGERING = "NULL";
+        }
+
+        // Comparison experiment identifiers (optional). Absent seed = unseeded, as before.
+        Parameter.EXPERIMENT_RUN_ID = (String) parameterMap.get("experiment.runId");
+        Parameter.EXPERIMENT_SEED = parameterMap.get("experiment.seed") == null ? null
+                : Long.parseLong(((String) parameterMap.get("experiment.seed")).trim());
 
         Stream<String> scenarioLines = parameter.stream()
                 .filter(line -> line.split("=").length == 1 && !line.equals(SCENARIOS));
